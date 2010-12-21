@@ -51,6 +51,14 @@ class valid
 	}
 	
 	
+	// Length
+	// ---------------------------------------------------------------------------
+	public static function length($low,$high,$number)
+	{
+		return self::range($low,$high,strlen($number));
+	}
+	
+	
 	// Email Address
 	// ---------------------------------------------------------------------------
 	public static function email($email)
