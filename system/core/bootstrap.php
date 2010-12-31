@@ -72,6 +72,7 @@ class bootstrap
 		// Load core files
 		require_once(SYSTEM.'/core/core.php');
 		require_once(SYSTEM.'/core/config.php');
+		require_once(SYSTEM.'/core/api.php');
 		require_once(SYSTEM.'/core/route.php');
 		require_once(SYSTEM.'/core/load.php');
 		require_once(SYSTEM.'/core/input.php');
@@ -124,6 +125,31 @@ class bootstrap
 		$tmp = "{$uri['controller_class']}_controller";
 		$controller = new $tmp();
 		unset($tmp);
+		
+		
+		// Check if using valid REST API
+		if(api::get())
+		{
+			if(!empty($controller->controller_api) and
+				is_array($controller->controller_api) and
+				!empty($controller->controller_api[$uri['function']]) and
+				is_array($controller->controller_api[$uri['function']]))
+			{
+				foreach($controller->controller_api[$uri['function']] as $e)
+				{
+					api::permit($e);
+				}
+				
+				if(!api::allowed(api::get()))
+				{
+					load::error('404');
+				}
+			}
+			else
+			{
+				load::error('404');
+			}
+		}
 		
 		
 		// Autoload Components
